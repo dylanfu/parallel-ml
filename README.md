@@ -9,11 +9,12 @@
 
 ## Modules
 Install the following modules:
-    - 'pip install tensorflow'
-    - 'pip install matplotlib'
-    - 'pip install pyqt5'
+- `pip install tensorflow`
+- `pip install matplotlib`
 
-NOTE: Add "matplotlib.use('Qt5Agg')" or  create a ~/.matplotlib/matplotlibrc file containing 'backend: Qt5Agg'
+For MacOS Mojave
+- `pip install pyqt5`
+- Add ``matplotlib.use('Qt5Agg')`` in the script or create a ~/.matplotlib/matplotlibrc file containing ``backend: Qt5Agg``
 
 # Run the training script
-Run 'python test.py'
+Run `python test.py`
