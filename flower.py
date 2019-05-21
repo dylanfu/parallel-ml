@@ -25,7 +25,6 @@ def format_example(image, label):
 Augments given dataset
 """
 def augment_data(image, label):
-  print("Augment data called!")
   image = tf.image.random_flip_left_right(image)
   image = tf.image.random_contrast(image, lower=0.0, upper=1.0)
   # Maybe add more augmentation
@@ -89,7 +88,6 @@ splits = tfds.Split.TRAIN.subsplit(weighted=SPLIT_WEIGHTS)
 train = raw_train.map(format_example)
 validation = raw_validation.map(format_example)
 test = raw_test.map(format_example)
-
 
 # Pre-process dataset
 train = train.shuffle(SHUFFLE_BUFFER_SIZE).batch(BATCH_SIZE)
