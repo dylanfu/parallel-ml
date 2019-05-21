@@ -9,12 +9,12 @@
 
 ## Setup virtualenv
 Create virtual environment:
-Mac/Linux: `virtualenv --system-site-packages -p python3 ./venv`
-Windows: `virtualenv --system-site-packages -p python3 ./venv`
+- Mac/Linux: `virtualenv --system-site-packages -p python3 ./venv`
+- Windows: `virtualenv --system-site-packages -p python3 ./venv`
 
 Activate virtual environment (Must activate before running any python scripts):
-Mac/Linux: `source ./venv/bin/activate`
-Windows: `.\venv\Scripts\activate`
+- Mac/Linux: `source ./venv/bin/activate`
+- Windows: `.\venv\Scripts\activate`
 
 ## Modules
 Install the following modules:
