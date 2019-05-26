@@ -97,3 +97,39 @@ Deactivate virtual environment when done by: `deactivate`
 | 5 (2936 Images)         | 261.304        | 0.9666             | 0.6079               | -                    |
 | Average                 | 266.001        | 0.8756             | 0.6193               | -                    |
 | Evaluation (12 Images)  | 0.516          | -                  | -                    | 0.6611               |
+
+
+## Dion
+
+### Specs
+- Acer Aspire E 15 
+- i7-5500U CPU @ 2.40GHz
+- Turbo Boost up to 3.50GHz
+- 2 Cores
+- 4 Logical Processors (Hyperthreading)
+
+### Results
+
+#### Results for `test.py`
+
+| Epoch     | Time (s)            | Accuracy  |
+| --------- | ------------------- | --------  |
+| 1         | 3.48                | 0.8270    |
+| 2         | 3.42                | 0.8655    |
+| 3         | 3.36                | 0.8767    |
+| 4         | 3.36                | 0.8848    |
+| 5         | 3.36                | 0.8901    |
+| Average   | 3.396               | 0.86882   |
+| Evaluation| 1.98                | 0.8722    |
+
+#### Results for `flower.py`
+
+| Epoch     | Time (s)            | Accuracy  |
+| --------- | ------------------- | --------  |
+| 1         | 460.952             | 0.6411    |
+| 2         | 452.144             | 0.8884    |
+| 3         | 455.08              | 0.9390    |
+| 4         | 466.824             | 0.9533    |
+| 5         | 458.016             | 0.9549    |
+| Average   | 458.06032           | 0.87534   |
+| Evaluation| 0.9                 | 0.6250    |
