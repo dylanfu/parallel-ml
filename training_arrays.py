@@ -15,9 +15,6 @@
 """Part of the Keras training engine related to plain array data.
 """
 # pylint: disable=protected-access
-
-#TODO loop at line 306 is where training actually occurs
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -245,9 +242,7 @@ def model_iteration(model,
   callbacks._call_begin_hook(mode)
   progbar.on_train_begin()
 
-### this is where the algorithm goes through our dataset.
-### The first line triggers a for loop that runs 'epoch' amount of times (default epoch = 5)
-  for epoch in range(initial_epoch, epochs):
+  for epoch in range(initial_epoch, epochs): #TODO: this iterates for every EPOCH
     if callbacks.model.stop_training:
       break
 
@@ -257,49 +252,45 @@ def model_iteration(model,
     callbacks.on_epoch_begin(epoch, epoch_logs, mode=mode)
     progbar.on_epoch_begin(epoch, epoch_logs)
 
-### By default use_steps = false, so ignore this whole block of code for now.
     if use_steps:
       # Step-wise loop.
-      for step in range(steps_per_epoch):
-        batch_logs = {'batch': step, 'size': 1}
-        callbacks._call_batch_hook(mode, 'begin', step, batch_logs)
-        progbar.on_batch_begin(step, batch_logs)
+        for step in range(steps_per_epoch): #TODO: this for loop does the training
+            batch_logs = {'batch': step, 'size': 1}
+            callbacks._call_batch_hook(mode, 'begin', step, batch_logs)
+            progbar.on_batch_begin(step, batch_logs)
 
-        # Get outputs.
-        try:
-          # `ins` can be callable in DistributionStrategy + eager case.
-          actual_inputs = ins() if callable(ins) else ins
-          batch_outs = f(actual_inputs)
-        except errors.OutOfRangeError:
-          logging.warning('Your dataset iterator ran out of data; '
-                          'interrupting training. Make sure that your dataset '
-                          'can generate at least `steps_per_epoch * epochs` '
-                          'batches (in this case, %d batches). You may need to'
-                          'use the repeat() function when building your '
-                          'dataset.' % steps_per_epoch * epochs)
-          break
-        if not isinstance(batch_outs, list):
-          batch_outs = [batch_outs]
+            # Get outputs.
+            try:
+              # `ins` can be callable in DistributionStrategy + eager case.
+              actual_inputs = ins() if callable(ins) else ins
+              batch_outs = f(actual_inputs) #TODO: this line takes the most time
+            except errors.OutOfRangeError:
+              logging.warning('Your dataset iterator ran out of data; '
+                              'interrupting training. Make sure that your dataset '
+                              'can generate at least `steps_per_epoch * epochs` '
+                              'batches (in this case, %d batches). You may need to'
+                              'use the repeat() function when building your '
+                              'dataset.' % steps_per_epoch * epochs)
+              break
+            if not isinstance(batch_outs, list):
+              batch_outs = [batch_outs]
 
-        if model._distribution_strategy:
-          batch_outs = training_distributed._per_device_aggregate_batch(
-              batch_outs, model, mode)
+            if model._distribution_strategy:
+              batch_outs = training_distributed._per_device_aggregate_batch(
+                  batch_outs, model, mode)
 
-        # Aggregate results.
-        if step == 0:
-          aggregator.create(batch_outs)
-        aggregator.aggregate(batch_outs)
+            # Aggregate results.
+            if step == 0:
+              aggregator.create(batch_outs)
+            aggregator.aggregate(batch_outs)
 
-        # Callbacks batch end.
-        batch_logs.update(training_utils.make_logs(model, batch_outs, mode))
-        callbacks._call_batch_hook(mode, 'end', step, batch_logs)
-        progbar.on_batch_end(step, batch_logs)
+            # Callbacks batch end.
+            batch_logs.update(training_utils.make_logs(model, batch_outs, mode))
+            callbacks._call_batch_hook(mode, 'end', step, batch_logs)
+            progbar.on_batch_end(step, batch_logs) #this is the progress bar that is outputted to the console
 
-        if callbacks.model.stop_training:
-          break
-### resume code from here (after use_case = true code block)
-
-### simply shuffles the items in the dataset around
+            if callbacks.model.stop_training:
+              break
     else:
       # Sample-wise loop.
       index_array = np.arange(num_samples_or_steps)
@@ -309,10 +300,8 @@ def model_iteration(model,
         np.random.shuffle(index_array)
       batches = make_batches(num_samples_or_steps, batch_size)
 
-#TODO this is where the training actually occurs (look to parallelise here)
       for batch_index, (batch_start, batch_end) in enumerate(batches):
-        batch_ids = index_array[batch_start:batch_end] ###takes partitions of size 'batch_size' of the dataset
-                                                       ### First approach maybe is to assign these partitions to different threads
+        batch_ids = index_array[batch_start:batch_end]
 
         # Slice into a batch.
         try:
@@ -338,20 +327,18 @@ def model_iteration(model,
 
         # Get outputs.
         batch_outs = f(ins_batch)
-
-        ###simply turns batch_outs into a list if not already a list
         if not isinstance(batch_outs, list):
           batch_outs = [batch_outs]
 
         # Aggregate results.
         if batch_index == 0:
-          aggregator.create(batch_outs) ###creates if it is the first batch
+          aggregator.create(batch_outs)
         aggregator.aggregate(batch_outs, batch_start, batch_end)
 
         # Callbacks batch end.
         batch_logs.update(training_utils.make_logs(model, batch_outs, mode))
         callbacks._call_batch_hook(mode, 'end', batch_index, batch_logs)
-        progbar.on_batch_end(batch_index, batch_logs) ### this line is responsible for printing the progress in the console
+        progbar.on_batch_end(batch_index, batch_logs)
 
         if callbacks.model.stop_training:
           break
@@ -381,10 +368,8 @@ def model_iteration(model,
           training_utils.make_logs(model, val_results, mode, prefix='val_'))
 
     callbacks.on_epoch_end(epoch, epoch_logs, mode=mode)
-    progbar.on_epoch_end(epoch, epoch_logs)
+    progbar.on_epoch_end(epoch, epoch_logs) #TODO: this is where the EPOCH finishes
   callbacks._call_end_hook(mode)
-
-### this is where we reach after all epochs are done
 
   if model._distribution_strategy:
     # TODO(priyag, psv): Copy back metrics to the original model as well?
@@ -397,6 +382,7 @@ def model_iteration(model,
   if mode == 'train':
     return model.history
   return results
+
 
 # For backwards compatibility for internal users of these loops.
 fit_loop = functools.partial(model_iteration, mode='train')
