@@ -54,7 +54,7 @@ Deactivate virtual environment when done by: `deactivate`
 
 #### Results for `test.py`
 
-| Epoch     | Time (s)            | Accuracy  |
+| Whole training     | Time (s)            | Accuracy  |
 | --------- | ------------------- | --------  |
 | 1         | 18.626782417297363  | 0.8822    |
 | 2         | 17.893579721450806  | 0.877     |
