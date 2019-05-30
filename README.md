@@ -20,8 +20,8 @@ Activate virtual environment (Must activate before running any python scripts):
 Install the following modules:
 - `pip install six`
 - `pip install wrapt`
-- `pip install -U --pre tensorflow` contains the Tensorflow 2.0 Alpha release
-- `pip install tfds-nightly`
+- `pip install tensorflow`
+- `pip install tensorflow-datasets`
 - `pip install matplotlib`
 
 For MacOS Mojave
