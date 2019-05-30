@@ -44,6 +44,7 @@ Deactivate virtual environment when done by: `deactivate`
 ## Torrance
 
 ### Specs
+- Windows 10
 - Dell Inc. Inspiron 5567
 - i7-7500U CPU @ 2.70GHz
 - Turbo Boost up to 3.50GHz
@@ -62,6 +63,18 @@ Deactivate virtual environment when done by: `deactivate`
 | 4         | 17.704848051071167  | 0.8725    |
 | 5         | 16.981231212615967  | 0.8687    |
 | Average   | 17.754655647277833  | 0.8754    |
+
+#### Results for `flower.py`
+
+| Epoch     | Time (s)            | Accuracy  |
+| --------- | ------------------- | --------  |
+| 1         | 1180            | 0.6502   |
+| 2         | 1177            | 0.8766   |
+| 3         | 1177            | 0.9333    |
+| 4         | 1182            | 0.9528    |
+| 5         | 1181             | 0.9579    |
+| Average   | 1179.4          | 0.8742   |
+| Evaluation| 2.651                 | 0.6544    |
 
 ## Dylan
 
