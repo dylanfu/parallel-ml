@@ -1,74 +1,90 @@
-from __future__ import print_function
-
-import argparse
-import time
-
-import numpy as np
 import tensorflow as tf
-from tensorflow.python.client import timeline
+from tensorflow import keras
+import numpy as np
+import matplotlib.pyplot as plt
+import time
+import psutil as ps
 
-parser = argparse.ArgumentParser()
-parser.add_argument('core_counts', nargs='+', type=int)
-parser.add_argument('--use-devs', action='store_true')
-parser.add_argument('--use-inter', action='store_true')
-parser.add_argument('--use-intra', action='store_true')
-parser.add_argument('--no-const-fold', action='store_false', dest='const_fold')
-args = parser.parse_args()
+#preproccessing
 
-for n_cpus in args.core_counts:
-    n_devs = n_cpus if args.use_devs else 1
-    n_inter = n_cpus if args.use_inter else 1
-    n_intra = n_cpus if args.use_intra else 1
-    with tf.Session(config=tf.ConfigProto(
-            device_count={ "CPU": n_devs },
-            inter_op_parallelism_threads=n_inter,
-            intra_op_parallelism_threads=n_intra,
-    )) as sess:
+#change the number of hidden layers (1, 4, 8)
+hidden = [1, 4, 8]
+#change the number of neurons per layer (32, 128, 256)
+neuron = [32, 128, 256]
+#change the number of epochs (1, 10, 20)
+epoch = [1, 10, 20]
+#change activation (relu)
 
-        print('Running on %s CPU devices with %s inter- and %s intra-parallelism' % (
-            n_devs, n_inter, n_intra))
+#Test accuracy
+testAccuracy = []
 
-        size = 8000
+#Total time
+totalTime = []
 
-        ops = []
-        feed = {}
-        for i in range(n_cpus):
-            d = "/cpu:%s" % (i % n_devs)
-            print('  Assigning matmul to %s' % d)
-            with tf.device(d):
-                if args.const_fold:
-                    A = tf.ones([size, size], name=("A%s" % i))
-                    B = tf.ones([size, size], name=("B%s" % i))
-                else:
-                    A_name = "A%s" % i
-                    B_name = "B%s" % i
-                    A = tf.placeholder(tf.float32, shape=[size, size], name=A_name)
-                    B = tf.placeholder(tf.float32, shape=[size, size], name=B_name)
-                    feed["%s:0" % A_name] = np.random.rand(size, size)
-                    feed["%s:0" % B_name] = np.random.rand(size, size)
-                x = tf.matmul(A, B)
-                ops.append(x)
+gogo = ps.cpu_count()
+yoyo = ps.cpu_percent(interval=None)
+print("###########################")
+print(gogo)
+print(yoyo)
+print("###########################")
 
-        start_time = time.perf_counter()
-        start_clock = time.clock()
-        sess.run(ops, feed_dict=feed)
-        stop_time = time.perf_counter()
-        stop_clock = time.clock()
 
-        print('  Duration (via time.perf_counter()): %f (%f - %f)' % (stop_time - start_time, stop_time, start_time))
-        print('  Clock (via time.clock()): %f (%f - %f)' % (stop_clock - start_clock, stop_clock, start_clock))
 
-        # run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
-        # run_metadata = tf.RunMetadata()
-        # sess.run([x, y, z], options=run_options, run_metadata=run_metadata)
+fashion_mnist = keras.datasets.fashion_mnist
+(train_images, train_labels), (test_images,
+                               test_labels) = fashion_mnist.load_data()
 
-        # for device in run_metadata.step_stats.dev_stats:
-        #     device_name = device.device
-        #     print(device.device)
-        #     for node in device.node_stats:
-        #         print("   ", node.node_name)
+class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress',
+               'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 
-        # fetched_timeline = timeline.Timeline(run_metadata.step_stats)
-        # chrome_trace = fetched_timeline.generate_chrome_trace_format()
-        # with open('timeline_01.json', 'w') as f:
-        #     f.write(chrome_trace)
+train_images = train_images / 255.0
+test_images = test_images / 255.0
+
+models = []
+
+### build the model
+for i in range(len(neuron)):
+    model = keras.Sequential([
+        keras.layers.Flatten(input_shape=(28, 28)),
+        keras.layers.Dense(neuron[i], activation=tf.nn.relu),
+        keras.layers.Dense(10, activation=tf.nn.softmax)
+    ])
+
+    model.compile(optimizer='adam',
+                  loss='sparse_categorical_crossentropy',
+                  metrics=['accuracy'])
+
+    models.append(model)
+###
+
+for i in range(len(models)):
+
+    meep = models[i]
+
+    timeDiff = time.time()
+
+    ###train the model
+
+    gogo = ps.cpu_count()
+    yoyo = ps.cpu_percent(interval=0.1)
+    print("###########################")
+    print(gogo)
+    print(yoyo)
+    print("###########################")
+    meep.fit(train_images, train_labels, epochs=5)
+    ###
+
+    timeDiff = time.time() - timeDiff
+
+    ##evaluate the model
+    test_loss, test_acc = meep.evaluate(test_images, test_labels)
+    print('Test accuracy:', test_acc)
+    testAccuracy.append(test_acc)
+
+    print('Total Time: ', timeDiff)
+    totalTime.append(timeDiff)
+
+print(testAccuracy)
+print(totalTime)
+
+
