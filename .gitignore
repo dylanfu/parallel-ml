@@ -106,3 +106,9 @@ venv.bak/
 # VS Code file
 .vscode
 .vscode/
+
+# Mac Files
+.DS_Store
+
+# Dataset
+.tf_flowers

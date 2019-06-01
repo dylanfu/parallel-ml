@@ -3,6 +3,7 @@ from setuptools import setup
 
 REQUIRED_PACKAGES = [
   'tensorflow>=1.13',
+  'tensorflow-datasets==1.0.2'
 ]
 
 setup(
