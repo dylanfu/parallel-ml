@@ -11,7 +11,7 @@ import tensorflow_datasets as tfds
 # from tensorflow.python.keras import models
 from tensorflow import keras
 
-tf.logging.set_verbosity(tf.logging.DEBUG)
+tf.logging.set_verbosity(tf.logging.INFO)
 
 
 def keras_estimator(model_dir, config, learning_rate):
@@ -25,12 +25,8 @@ def keras_estimator(model_dir, config, learning_rate):
     Returns:
       A keras.Model
     """
-#   model = models.Sequential()
 
-#   model.add(Flatten(input_shape=(28, 28)))
-#   model.add(Dense(128, activation=tf.nn.relu))
-#   model.add(Dense(10, activation=tf.nn.softmax))
-
+    # Create model layers
     img_inputs = keras.Input(shape=(64, 64, 3))
     conv_1 = keras.layers.Conv2D(32, (3, 3), activation='relu')(img_inputs)
     maxpool_1 = keras.layers.MaxPooling2D((2, 2))(conv_1)
@@ -55,46 +51,28 @@ def keras_estimator(model_dir, config, learning_rate):
     return estimator
 
 
-def input_fn(batch_size, data_path, mode):
+def input_fn(data_path, batch_size, mode):
     """Input function.
 
     Args:
-      features: (numpy.array) Training or eval data.
-      labels: (numpy.array) Labels for training or eval data.
+      data_path: (str) path to
       batch_size: (int)
       mode: tf.estimator.ModeKeys mode
 
     Returns:
-      A tf.estimator.
+      A tf.data.Dataset.
     """
-    # Default settings for training.
-    # if labels is None:
-    #     inputs = features
-    # else:
-    #     # Change numpy array shape.
-    #     inputs = (features, labels)
-    # Convert the inputs to a Dataset.
-    # dataset = tf.data.Dataset.from_tensor_slices(inputs)
 
     SPLIT_WEIGHTS = (9, 1)
     splits = tfds.Split.TRAIN.subsplit(weighted=SPLIT_WEIGHTS)
-    (train_data, test_data), info = tfds.load(name="tf_flowers",
-                                              with_info=True,
-                                              download=True,
+    (train_data, test_data) = tfds.load(name="tf_flowers",
                                               split=list(splits),
                                               as_supervised=True,
                                               data_dir=data_path)
-
     assert isinstance(train_data, tf.data.Dataset)
     assert isinstance(test_data, tf.data.Dataset)
-    # assert isinstance(dataset, tf.data.Dataset)
-
-    print(info)
 
     # Format datasets
-    # dataset = dataset.map(format_example)
-    # test = raw_test.map(format_example)
-
     if mode == tf.estimator.ModeKeys.TRAIN:
         dataset = train_data.map(format_example)
         dataset = dataset.shuffle(1024).batch(batch_size)
@@ -104,7 +82,6 @@ def input_fn(batch_size, data_path, mode):
         dataset = test_data.map(format_example)
         dataset = dataset.batch(batch_size)
 
-    # return dataset.make_one_shot_iterator().get_next()
     return dataset
 
 

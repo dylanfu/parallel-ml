@@ -4,13 +4,11 @@ from __future__ import print_function
 
 import argparse
 
-import numpy as np
 import time
 from . import model
 from . import utils
 
 import tensorflow as tf
-import tensorflow_datasets as tfds
 from tensorflow.contrib.training.python.training import hparam
 
 
@@ -60,24 +58,9 @@ def train_and_evaluate(params):
     Args:
       params: (dict) Command line parameters passed from task.py
     """
-    # Loads data.
-    # (train_data, test_data) = \
-    #     utils.prepare_data(data_path=params.data_path,
-    #                        batch_size=params.batch_size)
 
+    # Weight split between train and test portion of the whole dataset
     SPLIT_WEIGHTS = (9, 1)
-    # splits = tfds.Split.TRAIN.subsplit(weighted=SPLIT_WEIGHTS)
-    # (train_data, test_data) = tfds.load(name="tf_flowers",
-    #                                   split=list(splits),
-    #                                   as_supervised=True,
-    #                                   data_dir=params.data_path)
-
-    # assert isinstance(train_data, tf.data.Dataset)
-    # assert isinstance(test_data, tf.data.Dataset)
-
-    # # Scale values to a range of 0 to 1.
-    # train_data = train_data / 255.0
-    # test_data = test_data / 255.0
 
     # Calculating number of images in train and test sets
     # to establish a good step size
@@ -85,35 +68,27 @@ def train_and_evaluate(params):
         3670 * weight/10
         for weight in SPLIT_WEIGHTS)
 
-    # num_train, num_test = (
-    #     5 * weight/10
-    #     for weight in (9,1))
-    # train_steps = round(num_train)
-    # test_steps = round(num_test)
-
     # Create TrainSpec.
     train_spec = tf.estimator.TrainSpec(
         input_fn=lambda: model.input_fn(
-            # dataset=train_data,
-            batch_size=params.batch_size,
             data_path=params.data_path,
+            batch_size=params.batch_size,
             mode=tf.estimator.ModeKeys.TRAIN),
         max_steps=train_steps)
 
     # Create EvalSpec.
     eval_spec = tf.estimator.EvalSpec(
         input_fn=lambda: model.input_fn(
-            # dataset=test_data,
-            batch_size=params.batch_size,
             data_path=params.data_path,
+            batch_size=params.batch_size,
             mode=tf.estimator.ModeKeys.EVAL),
-        # test_data,
         steps=None,
         start_delay_secs=10,
         throttle_secs=10)
 
     # Define running config.
     run_config = tf.estimator.RunConfig(save_checkpoints_steps=500)
+    
     # Create estimator.
     estimator = model.keras_estimator(
         model_dir=params.job_dir,

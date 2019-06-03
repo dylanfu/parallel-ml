@@ -25,7 +25,6 @@ import tensorflow_datasets as tfds
 
 
 WORKING_DIR = os.getcwd()
-LOCAL_PATH = 'flower-data'
 IMG_SIZE = 64
 IMG_SHAPE = (IMG_SIZE, IMG_SIZE, 3)
 SHUFFLE_BUFFER_SIZE = 1024
@@ -110,19 +109,5 @@ def prepare_data(data_path, batch_size):
                                       split=list(splits),
                                       as_supervised=True,
                                       data_dir=data_path)
-    
-    # # Format datasets
-    # train = raw_train.map(format_example)
-    # test = raw_test.map(format_example)
-
-    # # Pre-process dataset
-    # train = train.shuffle(SHUFFLE_BUFFER_SIZE).batch(batch_size)
-    # test = test.batch(batch_size)
-    # # (Optional) prefetch will enable the input pipeline to asynchronously fetch
-    # # batches while your model is training.
-    # # train = train.prefetch(tf.data.experimental.AUTOTUNE)
-
-    # # Augment training dataset
-    # train = train.map(augment_data)
 
     return (raw_train, raw_test)
