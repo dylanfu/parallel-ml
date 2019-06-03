@@ -33,18 +33,18 @@ def get_args():
     parser.add_argument(
         '--num-epochs',
         type=float,
-        default=5,
-        help='number of times to go through the data, default=5')
+        default=3,
+        help='number of times to go through the data, default=3')
     parser.add_argument(
         '--batch-size',
         default=32,
         type=int,
-        help='number of records to read during each training step, default=128')
+        help='number of records to read during each training step, default=32')
     parser.add_argument(
         '--learning-rate',
         default=.01,
         type=float,
-        help='learning rate for gradient descent, default=.001')
+        help='learning rate for gradient descent, default=.01')
     parser.add_argument(
         '--verbosity',
         choices=['DEBUG', 'ERROR', 'FATAL', 'INFO', 'WARN'],
@@ -65,7 +65,7 @@ def train_and_evaluate(params):
     # Calculating number of images in train and test sets
     # to establish a good step size
     train_steps, test_steps = (
-        3670 * weight/10
+        params.num_epochs * 3670 * weight/10
         for weight in SPLIT_WEIGHTS)
 
     # Create TrainSpec.

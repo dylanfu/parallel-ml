@@ -115,6 +115,6 @@ venv.bak/
 # Dataset
 .tf_flowers
 tf_flowers/
-flower*
+flower_*
 downloads/
 download/
