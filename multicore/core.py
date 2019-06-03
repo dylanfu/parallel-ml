@@ -187,6 +187,8 @@ def test3(num, q):
     # set variables
     neuron_per_layer = 128
 
+    hidden = [1, 4, 8]
+
     models.clear()
 
     ### build the models
@@ -206,6 +208,8 @@ def test3(num, q):
         keras.layers.Flatten(input_shape=(28, 28)),
         keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
         keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
+        keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
+        keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
         keras.layers.Dense(10, activation=tf.nn.softmax)
     ])
 
@@ -217,6 +221,11 @@ def test3(num, q):
 
     model = keras.Sequential([
         keras.layers.Flatten(input_shape=(28, 28)),
+        keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
+        keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
+        keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
+        keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
+        keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
         keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
         keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
         keras.layers.Dense(neuron_per_layer, activation=tf.nn.relu),
@@ -259,7 +268,7 @@ def test3(num, q):
         info.append(len(hold_core))
         info.append(time_diff)
         info.append(num_of_epochs)
-        info.append(i + 1)
+        info.append(hidden[i])
         info.append(neuron_per_layer)
 
         if i == 0:
