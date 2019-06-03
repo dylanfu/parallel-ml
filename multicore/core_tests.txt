@@ -1,0 +1,57 @@
+##Test1
+Number of cores used:1
+Core [1]: 97.78636363636363
+Core [2]: 11.55
+Core [3]: 7.045454545454545
+Core [4]: 8.645454545454545
+Number of neurons per layer used:128
+Number of hidden layers used:1
+Number of epochs used:5
+Loss of model:0.3433910234928131
+Accuracy of model:0.8765
+Time to train model (s):22.939414501190186
+
+
+
+Number of cores used:2
+Core [1]: 81.66
+Core [2]: 72.364
+Core [3]: 9.632
+Core [4]: 9.488
+Number of neurons per layer used:128
+Number of hidden layers used:1
+Number of epochs used:5
+Loss of model:0.35532492797374726
+Accuracy of model:0.8744
+Time to train model (s):25.312302589416504
+
+
+
+Number of cores used:3
+Core [1]: 70.80416666666667
+Core [2]: 62.958333333333336
+Core [3]: 66.55
+Core [4]: 16.554166666666667
+Number of neurons per layer used:128
+Number of hidden layers used:1
+Number of epochs used:5
+Loss of model:0.36038850739002226
+Accuracy of model:0.8704
+Time to train model (s):24.098676919937134
+
+
+
+Number of cores used:4
+Core [1]: 60.060869565217395
+Core [2]: 60.61739130434783
+Core [3]: 60.38695652173913
+Core [4]: 59.469565217391306
+Number of neurons per layer used:128
+Number of hidden layers used:1
+Number of epochs used:5
+Loss of model:0.3535962623119354
+Accuracy of model:0.8742
+Time to train model (s):23.533072233200073
+
+
+
