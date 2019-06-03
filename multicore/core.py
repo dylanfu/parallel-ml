@@ -124,7 +124,7 @@ def test2(num, q):
     # set variables
     hidden_layers = 1
 
-    neuron = [32, 128, 256]
+    neuron = [32, 128, 256, 512]
 
     ### build the models
     for i in range(len(neuron)):
@@ -359,7 +359,7 @@ def outputAppend(info, core_usage, title):
 hidden = [1, 4, 8]
 hidden_layers = hidden[0]
 #change the number of neurons per layer (32, 128, 256)
-neuron = [32, 128, 256]
+neuron = [32, 128, 256, 512]
 neuron_per_layer = neuron[1]
 #change the number of epochs (1, 10, 20)
 epoch = [1, 5, 10, 20]
